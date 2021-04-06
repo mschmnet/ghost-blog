@@ -1,0 +1,30 @@
+@startuml
+actor "Blog visitor" as actor
+folder "Linux server" as server{
+  card "Port 443" as ssl_port
+  node "Docker" as docker_all{
+    folder "main docker containers" as docker{
+      node "NGINX \n(acting as reverse proxy and \nproviding SSL/TLS encryption)" as nginx
+      database "MySQL" as mysql
+      node "Ghost" as ghost
+      storage "Volume \n(Ghost content)" as volume
+    }
+    folder "auxiliary containers" as aux_docker{
+      node "backup / restore" as backup_cont
+    }
+  }
+}
+cloud "Dropbox" as dropbox
+cloud "Docker hub" as hub
+
+actor -right-> ssl_port
+nginx -right-> ghost
+ghost -up-> mysql
+ghost -up-> volume
+backup_cont -down-> volume
+backup_cont -right-> dropbox
+backup_cont -down-> mysql
+dropbox -left-> backup_cont
+ssl_port -right-> nginx
+hub -down-> docker_all
+@enduml

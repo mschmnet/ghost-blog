@@ -17,6 +17,7 @@ folder "Linux server" as server{
 cloud "Dropbox" as dropbox
 cloud "Docker hub" as hub
 
+
 actor -right-> ssl_port
 nginx -right-> ghost
 ghost -up-> mysql
